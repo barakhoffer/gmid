@@ -2,6 +2,10 @@
 # Author: Mohamed Watfa
 # URL: https://github.com/medwatt/
 #-----------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
+# Changes: Barak Hoffer
+# URL: https://github.com/barakhoffer/
+#-----------------------------------------------------------------------------#
 import numpy as np
 from scipy.interpolate import interpn
 import matplotlib as mpl
@@ -270,6 +274,7 @@ class GMID:
             independent_expression, self.extracted_table
         )
         g = values[(np.abs(self.extracted_table["l"] - length)).argmin()]
+        print(g)
         if dependent_expression:
             values, _ = self.__calculate_from_expression(
                 dependent_expression, self.extracted_table
@@ -282,6 +287,33 @@ class GMID:
         return interpn((self.lookup_table["l"], g), values, point)
 
     ### }}}
+
+    ### private function: look for a value using a calculated expression {{{
+    def __lookup_L(
+        self,
+        independent_expression: dict,
+        val_a: float,
+        dependent_expression: str | dict,
+        val_b : float
+    ):
+        values_a, _ = self.__calculate_from_expression(
+            independent_expression, self.extracted_table
+        )
+        values_b, _ = self.__calculate_from_expression(
+                dependent_expression, self.extracted_table
+            )
+        l = self.extracted_table["l"]
+        # ToDo: maybe can be more sophisticated, taking top x close values
+        g = [values_b[i][(np.abs(values_a[i] - val_a)).argmin()] for i in range(len(l))]
+
+        if val_b < min(g):
+            val_b = min(g)
+        elif val_b > max(g):
+            val_b = max(g)
+
+        return interpn((g,), l, np.array([val_b]), method='nearest', bounds_error=False)
+
+    ### }}}    
 
     ### quick plot {{{
     def quick_plot(
@@ -592,6 +624,27 @@ class GMID:
             return self.__lookup_by(length, self.gmid_expression, gmid, expression)
 
     ### }}}
+
+    ### function: lookup a parameter by gmid from the extracted table {{{
+    def lookup_L(
+        self, gmid: float, expression: str | dict, value : float
+    ) -> np.ndarray:
+        """
+        Return the interpolated value calculated by `expression` for  given
+        `length` and `gmid` variables.
+        `length` can take a range in the form (start, stop, step)
+        --------
+        Example:
+        --------
+            nmos.lookup_by_gmid(
+                length=450e-9,
+                gmid=15,
+                expression=nmos.gain_expression
+            )
+        """
+        return self.__lookup_L(self.gmid_expression, gmid, expression, value)
+
+    ### }}}    
 
     ### collection of commonly-used plot functions {{{
     def current_density_plot(
