@@ -6,6 +6,7 @@
 # Changes: Barak Hoffer
 # URL: https://github.com/barakhoffer/
 #-----------------------------------------------------------------------------#
+from __future__ import annotations
 import numpy as np
 from scipy.interpolate import interpn
 import matplotlib as mpl
@@ -31,6 +32,7 @@ class GMID:
             "gm",
             "gmbs",
             "gds",
+            "vdsat",
             "cgg",
             "cgs",
             "cbg",
@@ -104,6 +106,11 @@ class GMID:
             "variables": ["vgs"],
             "function": lambda x: x,
             "label": "$V_{GS} (V)$",
+        }
+        self.vdsat_expression = {
+            "variables": ["vdsat"],
+            "function": lambda x: x,
+            "label": "$V_{Dsat} (V)$",
         }
         self.vds_expression = {
             "variables": ["vds"],
@@ -274,7 +281,6 @@ class GMID:
             independent_expression, self.extracted_table
         )
         g = values[(np.abs(self.extracted_table["l"] - length)).argmin()]
-        print(g)
         if dependent_expression:
             values, _ = self.__calculate_from_expression(
                 dependent_expression, self.extracted_table
@@ -724,6 +730,24 @@ class GMID:
             save_fig=save_fig,
             return_result=return_result,
         )
+    
+    def vdsat_plot(
+        self,
+        x_limit: tuple = (),
+        y_limit: tuple = (),
+        lengths: tuple = (),
+        save_fig: str = "",
+        return_result: bool = False,
+    ):
+        return self.plot_by_expression(
+            x_axis=self.gmid_expression,
+            y_axis=self.vdsat_expression,
+            lengths=lengths,
+            x_limit=x_limit,
+            y_limit=y_limit,
+            save_fig=save_fig,
+            return_result=return_result,
+        )    
 
 
 ### }}}

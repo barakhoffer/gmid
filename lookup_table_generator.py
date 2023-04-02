@@ -42,6 +42,7 @@ class LookupTableGenerator:
             "gm",
             "gmbs",
             "gds",
+            "vdsat",
             "cgg",
             "cgs",
             "cbg",
