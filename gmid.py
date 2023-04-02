@@ -747,7 +747,25 @@ class GMID:
             y_limit=y_limit,
             save_fig=save_fig,
             return_result=return_result,
-        )    
+        )
+
+    def vgs_plot(
+        self,
+        x_limit: tuple = (),
+        y_limit: tuple = (),
+        lengths: tuple = (),
+        save_fig: str = "",
+        return_result: bool = False,
+    ):
+        return self.plot_by_expression(
+            x_axis=self.gmid_expression,
+            y_axis=self.vgs_expression,
+            lengths=lengths,
+            x_limit=x_limit,
+            y_limit=y_limit,
+            save_fig=save_fig,
+            return_result=return_result,
+        )
 
 
 ### }}}
