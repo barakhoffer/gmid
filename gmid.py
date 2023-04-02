@@ -763,6 +763,7 @@ class GMID:
             lengths=lengths,
             x_limit=x_limit,
             y_limit=y_limit,
+            y_scale="linear",
             save_fig=save_fig,
             return_result=return_result,
         )

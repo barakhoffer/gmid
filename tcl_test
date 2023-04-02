@@ -1,0 +1,4 @@
+xschem select instance x1
+xschem descend 1
+xschem print svg out.svg
+exit
